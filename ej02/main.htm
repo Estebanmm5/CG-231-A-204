@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Grupo de cubos</title>
+  <style>
+    body {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <script type="module">
+    import * as THREE from 'https://sebastiann16.github.io/CompG/three.module.js';
+    import { OrbitControls } from 'https://sebastiann16.github.io/CompG/OrbitControls.js';
+    var WIDTH = window.innerWidth;
+    var HEIGHT = window.innerHeight;
+
+/*Crear la escena 
+*/
+
+    var renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(WIDTH, HEIGHT);
+    renderer.setClearColor(0xDDDDDD, 1);
+    document.body.appendChild(renderer.domElement);
+
+    var scene = new THREE.Scene();
+/*posicionar la cámara
+*/
+    var camera = new THREE.PerspectiveCamera(70, WIDTH / HEIGHT);
+    camera.position.z = 20;
+    camera.position.y = 5;
+    scene.add(camera);
+    const light = new THREE.AmbientLight(0x404040, 5);
+    scene.add(light);
+   
+    
+//creacion del cono 
+var base=1;
+var altura=base*3; 
+// uso de la librería THREE JS para construir cono (radio de base, altura del cono, numero de segmentos)
+var geometry = new THREE.ConeGeometry(base, altura, 10);
+var material = new THREE.MeshMatcapMaterial({ color: 0xCF9232 });
+var cone = new THREE.Mesh(geometry, material);
+scene.add(cone)
+
+			
+//Transformaciones  de cono 
+cone.position.set(0,0,base/2); //posicion del cono
+geometry.rotateX(Math.PI/2); //rotar la geometría 90 grados en x 
+geometry.rotateY(Math.PI/2); //rotar la geometría 90 grados en y
+
+geometry.translate(base+base/2,base,-(base/2)); // traslada la geometría 
+geometry.rotateZ(-Math.atan(base/altura)); //rota la geometría sobre el eje z
+
+
+
+//controlador de camara orbitcontrols
+    const controls = new OrbitControls(camera, renderer.domElement);
+    const axesHelper = new THREE.AxesHelper( 1000 ); //flechas del plano
+    scene.add( axesHelper );
+
+    const size = 1000;
+const divisions = 1000;
+//añadir la malla
+const gridHelper = new THREE.GridHelper( size, divisions );
+scene.add( gridHelper );
+
+
+    function animate() {
+
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera)
+    }
+    animate();
+  </script>
+</body>
+
+</html>
